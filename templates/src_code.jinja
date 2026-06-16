@@ -1,0 +1,12 @@
+/* Copyrights reserved */
+#include <iostream>
+
+{% for signal in signals %}
+    {{signal["SignalDatatype"]}} {{signal["signal"]}} = {{signal["SignalDefaulValue"]}};
+{% endfor %}
+
+int main()
+{
+    std::cout << {% for signal in signals %} {{signal["signal"]}} << " " << {% endfor %} "\n";
+    return 0;
+}

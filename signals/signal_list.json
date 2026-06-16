@@ -1,0 +1,50 @@
+[
+    {
+        "signal": "aeb",
+        "SignalDatatype": "int",
+        "SignalDefaulValue": 23,
+        "BusSignal": "AEB",
+        "BusSignalDatatype": "int",
+        "BusSignalDefaulValue": 23
+    },
+    {
+        "signal": "fcw",
+        "SignalDatatype": "int",
+        "SignalDefaulValue": 0,
+        "BusSignal": "FCW",
+        "BusSignalDatatype": "int",
+        "BusSignalDefaulValue": 0
+    },
+    {
+        "signal": "ldw",
+        "SignalDatatype": "int",
+        "SignalDefaulValue": 1,
+        "BusSignal": "LDW",
+        "BusSignalDatatype": "int",
+        "BusSignalDefaulValue": 1
+    },
+    {
+        "signal": "acc",
+        "SignalDatatype": "int",
+        "SignalDefaulValue": 50,
+        "BusSignal": "ACC",
+        "BusSignalDatatype": "int",
+        "BusSignalDefaulValue": 50
+    },
+    {
+        "signal": "esp",
+        "SignalDatatype": "int",
+        "SignalDefaulValue": 1,
+        "BusSignal": "ESP",
+        "BusSignalDatatype": "int",
+        "BusSignalDefaulValue": 1
+    },
+    {
+        "signal": "airbag",
+        "SignalDatatype": "int",
+        "SignalDefaulValue": 0,
+        "BusSignal": "AIRBAG",
+        "BusSignalDatatype": "int",
+        "BusSignalDefaulValue": 0
+    }
+]
