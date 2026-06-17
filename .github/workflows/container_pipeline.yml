@@ -1,0 +1,62 @@
+name: Embedded Gen - Containerized Runner
+on:
+  push:
+    paths:
+      "signals/signal_list.json"
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  validate-json:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout code
+      uses: actions/checkout@v4
+    - name: Build and Run validator container 
+      run: |
+        docker build -f docker/Dockerfile.validator -t json-validator .
+        docker run -rm json-validator
+
+  generate-code:
+    needs: validate-json
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+      - name: Generate Auto Code
+        run: |
+          docker build -f docker/Dockerfile.generator -t code-generator .
+          docker run --rm -v ${{ github.workspace }}/source_code:app/source_code code-generator
+      - name: Updaload to artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-assets
+          path: |
+            source_code/mappings.cpp
+
+  build-code:
+    needs: generate-code
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-assets
+          path: source_code
+      - name: Compile Code
+        run: |
+          docker build -f docker/Dockerfile.builder -t builder .
+          docker run --rm -v ${{ github.workspace }}/source_code:build/source_code builder
+
+  mock-flash:
+  if: github.event_name == 'schedule'
+  needs: build-code
+  runs-on: ubuntu-latest
+  steps:
+    - name: Flash on Hardware
+      run: echo "Successfully flashed the software. Testing begins"
+
+  
