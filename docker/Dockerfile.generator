@@ -1,0 +1,15 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+
+RUN pip install -r requirements.txt
+
+COPY generate_auto_code.py .
+COPY validate_json.py .
+COPY templates/ templates/
+COPY signals/signal_list.json signals/signal_list.json
+
+
+CMD [ "python", "generate_auto_code.py" ]

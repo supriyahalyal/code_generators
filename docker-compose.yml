@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  json-validator: 
+    # docker build -f docker/Dockerfile.validator -t json-validator .
+    build: 
+      context: .
+      dockerfile: docker/Dockerfile.validator
+
+  code-generator: 
+    # docker build -f docker/Dockerfile.generator -t code-generator .
+    build: 
+      context: .
+      dockerfile: docker/Dockerfile.generator
+    volumes:
+      - ./source_code:/app/source_code
+
+  cpp-builder:
+    # docker build -f docker/Dockerfile.builder -t cpp-builder .
+    build: 
+      context: .
+      dockerfile: docker/Dockerfile.builder
+    volumes:
+      - ./source_code:/build/source_code

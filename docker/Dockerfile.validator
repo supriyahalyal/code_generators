@@ -1,0 +1,12 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+
+RUN pip install -r requirements.txt
+
+COPY validate_json.py .
+COPY signals/signal_list.json signals/signal_list.json
+
+CMD ["python", "validate_json.py"]
