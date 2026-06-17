@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - "signals/signal_list.json"
+      - ".github/workflows"
   schedule:
     - cron: "0 0 * * *"
 
