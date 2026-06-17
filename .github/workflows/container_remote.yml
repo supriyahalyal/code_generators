@@ -1,0 +1,59 @@
+name: Embedded Gen - Remote Container Registry
+on:
+  push:
+    paths:
+      - "signals/signal_list.json"
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  validate-json:
+    runs-on: ubuntu-latest
+    container:
+      image: docker.io/supriyahalyal/json-validate:latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+      - name: Validate json
+        run: python validate_json.py
+
+  generate-code:
+    needs: validate-json
+    runs-on: ubuntu-latest
+    container:
+      image: docker.io/supriyahalyal/code-generator:latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+      - name: Generate Code
+        run: python generate_auto_code.py
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-assets
+          path: source_code
+
+  build-code:
+    needs: generate-code
+    runs-on: ubuntu-latest
+    container:
+      image: docker.io/supriyahalyal/builder:latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+      - name: download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-assets
+          path: source_code
+      - name: Compile Code
+        run: g++ -g source_code/mappings.cpp -o build_output > build.log 2>&1
+
+  mock-flash:
+    if: github.event_name == 'schedule'
+    needs: build-code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Flash on Hardware
+        run: echo "Successfully flashed the software. Testing begins"
