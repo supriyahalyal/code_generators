@@ -27,7 +27,7 @@ jobs:
       - name: Generate Auto Code
         run: |
           docker build -f docker/Dockerfile.generator -t code-generator .
-          docker run --rm -v ${{ github.workspace }}/source_code:app/source_code code-generator
+          docker run --rm -v ${{ github.workspace }}/source_code:/app/source_code code-generator
       - name: Updaload to artifact
         uses: actions/upload-artifact@v4
         with:
@@ -49,7 +49,7 @@ jobs:
       - name: Compile Code
         run: |
           docker build -f docker/Dockerfile.builder -t builder .
-          docker run --rm -v ${{ github.workspace }}/source_code:build/source_code builder
+          docker run --rm -v ${{ github.workspace }}/source_code:/build/source_code builder
 
   mock-flash:
     if: github.event_name == 'schedule'
