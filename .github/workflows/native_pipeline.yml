@@ -1,0 +1,77 @@
+name: Embedded Gen - Native Runner
+on: 
+  push:
+    paths:
+      - "signals/signal_list.json"
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  validate-json:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: 
+        PYTHON-VERSION: ["3.11"]
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+      - name: setup python
+        uses: actions/setup-python@v5
+        with: 
+          python-version: ${{ matrix.PYTHON-VERSION }}
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Validate json 
+        run: python validate_json.py
+
+  generate-code:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: 
+        PYTHON-VERSION: ["3.11"]
+    needs: validate-json
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+      - name: setup python
+        uses: actions/setup-python@v5
+        with: 
+          python-version: ${{ matrix.PYTHON-VERSION }}
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Generate code
+        run: python generate_auto_code.py > generation.log 2>&1
+      - name: Upload the Baton
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-assets
+          path: |
+            source_code/mappings.cpp
+            generation.log
+
+  build-code:
+    runs-on: ubuntu-latest
+    needs: generate-code
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+      - name: Download the Baton
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-assets
+          path: source_code
+      - name: Comple code
+        run:  g++ -g source_code/mappings.cpp -o build_output > build.log 2>&1
+      - name: Upload Build Logs 
+        uses: actions/upload-artifact@v4
+        with: 
+          name: build-logs
+          path: build.log
+
+  mock-flash:
+    if: github.event_name == "schedule"
+    needs: build-code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Flash on Hardware
+        run: echo "Successfully flashed the software. Testing begins"
