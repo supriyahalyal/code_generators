@@ -52,11 +52,11 @@ jobs:
           docker run --rm -v ${{ github.workspace }}/source_code:build/source_code builder
 
   mock-flash:
-  if: github.event_name == 'schedule'
-  needs: build-code
-  runs-on: ubuntu-latest
-  steps:
-    - name: Flash on Hardware
-      run: echo "Successfully flashed the software. Testing begins"
+    if: github.event_name == 'schedule'
+    needs: build-code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Flash on Hardware
+        run: echo "Successfully flashed the software. Testing begins"
 
   
