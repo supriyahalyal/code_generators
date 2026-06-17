@@ -11,7 +11,7 @@ jobs:
   validate-json:
     runs-on: ubuntu-latest
     container:
-      image: docker.io/supriyahalyal/json-validate:latest
+      image: docker.io/supriyahalyal/json-validator:latest
     steps:
       - name: checkout code
         uses: actions/checkout@v4
