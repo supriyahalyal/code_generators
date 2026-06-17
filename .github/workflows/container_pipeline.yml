@@ -16,7 +16,7 @@ jobs:
     - name: Build and Run validator container 
       run: |
         docker build -f docker/Dockerfile.validator -t json-validator .
-        docker run -rm json-validator
+        docker run --rm json-validator
 
   generate-code:
     needs: validate-json
