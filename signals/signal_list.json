@@ -18,7 +18,7 @@
     {
         "signal": "ldw",
         "SignalDatatype": "int",
-        "SignalDefaulValue": 1,
+        "SignalDefaulValue": 5,
         "BusSignal": "LDW",
         "BusSignalDatatype": "int",
         "BusSignalDefaulValue": 1
