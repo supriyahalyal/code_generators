@@ -69,7 +69,7 @@ jobs:
           path: build.log
 
   mock-flash:
-    if: github.event_name == "schedule"
+    if: github.event_name == 'schedule'
     needs: build-code
     runs-on: ubuntu-latest
     steps:
